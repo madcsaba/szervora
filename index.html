@@ -1033,23 +1033,57 @@ function chPath(c) {
 }
 
 /* ================= testrajz (a csontvázból) ================= */
-const TORSO = { m: 'M106 88 Q150 80 194 88 Q200 120 196 156 Q190 200 190 250 Q150 262 110 250 Q110 200 104 156 Q100 120 106 88 Z', f: 'M110 88 Q150 82 190 88 Q197 118 192 150 Q183 182 186 205 Q195 228 195 252 Q150 268 105 252 Q105 228 114 205 Q117 182 108 150 Q103 118 110 88 Z' };
 const HAIR = 'M127 44 Q124 9 150 8 Q176 9 173 44 L175 72 Q163 76 158 66 L142 66 Q137 76 125 72 Z';
 const LN = 'style="stroke:var(--body-line);fill:none" stroke-linecap="round"';
 const mir = (P) => [300 - P[0], P[1]];
-function limbsOf(S) { const R = [[S.shoulder, S.elbow, 24], [S.elbow, S.wrist, 20], [S.hip, S.knee, 34], [S.knee, S.ankle, 26]]; return [[[150, 58], [150, 84], 18], ...R, ...R.map(([a, b, w]) => [mir(a), mir(b), w])]; }
-function ellsOf(S) { const r = Math.round(-Math.atan2(S.wrist[0] - S.elbow[0], S.wrist[1] - S.elbow[1]) * 180 / Math.PI); return [[150, 40, 21, 25, 0], [S.hand[0], S.hand[1], 10, 18, r], [300 - S.hand[0], S.hand[1], 10, 18, -r], [S.foot[0], S.foot[1], 15, 8, 0], [300 - S.foot[0], S.foot[1], 15, 8, 0]]; }
+const FIGW = {
+  m: { delt: 13, wr: 9.5, side: 193, waist: 190, hip: 196, hipIn: 9.5, calfIn: 7, neckx: 158 },
+  f: { delt: 10.5, wr: 8, side: 184, waist: 182, hip: 198, hipIn: 8.5, calfIn: 6, neckx: 157 }
+};
+function off(a, b, k, at = 1) { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [a[0] + dx * at + dy / l * k, a[1] + dy * at - dx / l * k]; }
+const rotU = (u, deg) => { const r = deg * Math.PI / 180; return [u[0] * Math.cos(r) - u[1] * Math.sin(r), u[0] * Math.sin(r) + u[1] * Math.cos(r)]; };
+function halfOf(S, w) {
+  const T = S.fingertip;
+  return [
+    [150, 8.5], [169, 13], [174, 31], [169, 47], [159.5, 60],
+    [w.neckx, 70], [w.neckx + 1, 81], [S.acromion[0], S.acromion[1] + 1],
+    off(S.shoulder, S.elbow, w.delt, 0.14), off(S.shoulder, S.elbow, w.delt * 0.78, 1), off(S.elbow, S.wrist, w.wr, 1),
+    off(S.wrist, S.hand, w.wr * 0.75, 1), off(S.hand, T, 5, 0.6), [T[0] + 5, T[1]], [T[0] + 4, T[1] + 2],
+    off(S.hand, T, -5, 0.6), off(S.wrist, S.hand, -w.wr * 0.25, 1), off(S.elbow, S.wrist, -w.wr * 0.7, 1), off(S.shoulder, S.elbow, -w.delt * 0.5, 1),
+    [S.axfold[0] - 4, S.axfold[1] - 5], [w.side, 152], [w.waist, 196], [w.hip, 234],
+    off(S.hip, S.knee, 15, 0.15), off(S.hip, S.knee, 14.5, 1), off(S.knee, S.ankle, 10, 0.4), off(S.knee, S.ankle, 8.5, 1),
+    [S.foot[0] + 15, S.foot[1] - 5], [S.foot[0] + 17.5, S.foot[1]], [S.foot[0] + 4, S.foot[1] + 5], [S.foot[0] - 12, S.foot[1] + 4],
+    [S.ankle[0] - 6, S.ankle[1] - 2], off(S.knee, S.ankle, -w.calfIn, 0.4), off(S.hip, S.knee, -w.hipIn, 1), off(S.hip, S.knee, -w.hipIn * 0.8, 0.12),
+    [150, 244]
+  ];
+}
+function smoothClosed(pts) {
+  const n = pts.length;
+  const mid = (i) => [(pts[i][0] + pts[(i + 1) % n][0]) / 2, (pts[i][1] + pts[(i + 1) % n][1]) / 2];
+  const m0 = mid(0); let d = `M${r1(m0[0])} ${r1(m0[1])} `;
+  for (let i = 1; i < n; i++) { const m = mid(i); d += `Q${r1(pts[i][0])} ${r1(pts[i][1])} ${r1(m[0])} ${r1(m[1])} `; }
+  return d + 'Z';
+}
+function fingersSvg(H, T, sg) {
+  const dx = T[0] - H[0], dy = T[1] - H[1], l = Math.hypot(dx, dy), u0 = [dx / l, dy / l];
+  let s = '';
+  for (const a of [-16, -5.5, 5.5, 16]) {
+    const u = rotU(u0, a * sg), e = rotU(u0, a * sg * 1.35);
+    s += `<line x1="${r1(H[0] + u[0] * 4)}" y1="${r1(H[1] + u[1] * 4)}" x2="${r1(H[0] + e[0] * 13)}" y2="${r1(H[1] + e[1] * 13)}" ${LN} stroke-width="1.6"/>`;
+  }
+  return s;
+}
 function bodyInner(v, model = MODEL) {
-  const S = SKEL[model] || SKEL.m; let o = '', f = '';
-  if (model === 'f' && v === 'f') o += `<path d="${HAIR}" style="fill:var(--body-line)"/>`;
-  for (const [[a, b], [c, d], w] of limbsOf(S)) { o += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" style="stroke:var(--body-line)" stroke-width="${w + 3}" stroke-linecap="round"/>`; f += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" style="stroke:var(--body)" stroke-width="${w}" stroke-linecap="round"/>`; }
-  const tor = TORSO[model] || TORSO.m;
-  o += `<path d="${tor}" style="fill:var(--body-line);stroke:var(--body-line)" stroke-width="3" stroke-linejoin="round"/>`; f += `<path d="${tor}" style="fill:var(--body)"/>`;
-  for (const [cx, cy, rx, ry, r] of ellsOf(S)) { const tr = r ? ` transform="rotate(${r} ${cx} ${cy})"` : ''; o += `<ellipse cx="${cx}" cy="${cy}" rx="${rx + 1.5}" ry="${ry + 1.5}" style="fill:var(--body-line)"${tr}/>`; f += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" style="fill:var(--body)"${tr}/>`; }
+  const S = SKEL[model] || SKEL.m, w = FIGW[model] || FIGW.m;
+  const h = halfOf(S, w), sil = smoothClosed(h.concat(h.slice(1, -1).reverse().map(mir)));
+  let o = `<path d="${sil}" style="fill:var(--body-line);stroke:var(--body-line)" stroke-width="3" stroke-linejoin="round"/>`;
+  let f = `<path d="${sil}" style="fill:var(--body)"/>`;
   let x = '';
   if (v === 'f') {
+    x += fingersSvg(S.hand, S.fingertip, 1) + fingersSvg(mir(S.hand), mir(S.fingertip), -1);
     x += `<ellipse cx="143" cy="36" rx="3.2" ry="1.6" style="fill:var(--body-line)"/><ellipse cx="157" cy="36" rx="3.2" ry="1.6" style="fill:var(--body-line)"/><path d="M150 38 L148 46 Q150 48 153 46" ${LN} stroke-width="1.2"/><path d="M145 56 Q150 58 155 56" ${LN} stroke-width="1.2"/><circle cx="150" cy="205" r="1.8" style="fill:var(--body-line)"/>`;
-    if (model === 'f') x += `<path d="M126 132 Q137 146 148 136 M152 136 Q163 146 174 132" ${LN} stroke-width="1.2"/>`;
+    if (model === 'f') { x += `<path d="M126 132 Q137 146 148 136 M152 136 Q163 146 174 132" ${LN} stroke-width="1.2"/>`; x += `<path d="M134 92 Q150 100 166 92" ${LN} stroke-width="1.2"/>`; }
+    else x += `<path d="M136 104 Q150 111 164 104 M140 146 Q150 150 160 146" ${LN} stroke-width="1.2"/>`;
   } else {
     x += `<path d="M150 70 L150 245" ${LN} stroke-width="1.4" stroke-dasharray="3 3"/><path d="M122 112 Q130 140 138 150 M178 112 Q170 140 162 150" ${LN} stroke-width="1.2"/><path d="M120 356 Q128 360 136 356 M164 356 Q172 360 180 356" ${LN} stroke-width="1.2"/>`;
     x += model === 'f' ? `<path d="${HAIR}" style="fill:var(--body-line)"/>` : `<path d="M132 22 Q150 12 168 22" ${LN} stroke-width="1.2"/>`;
@@ -1058,36 +1092,49 @@ function bodyInner(v, model = MODEL) {
 }
 /* csontváz-réteg */
 function skelSvg(v, S) {
-  const o = [], f = [];
+  const o = [], f = []; let s = '';
   const line = (A, B, w) => { o.push(`<line x1="${r1(A[0])}" y1="${r1(A[1])}" x2="${r1(B[0])}" y2="${r1(B[1])}" class="bo" stroke-width="${w + 1.6}"/>`); f.push(`<line x1="${r1(A[0])}" y1="${r1(A[1])}" x2="${r1(B[0])}" y2="${r1(B[1])}" class="bf" stroke-width="${w}"/>`); };
-  const off = (A, B, k, t0 = 0, t1 = 1) => { const dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy), nx = dy / l, ny = -dx / l; return [[A[0] + dx * t0 + nx * k, A[1] + dy * t0 + ny * k], [A[0] + dx * t1 + nx * k, A[1] + dy * t1 + ny * k]]; };
-  let s = '';
+  const off2 = (A, B, k, t0 = 0, t1 = 1) => { const dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy), nx = dy / l, ny = -dx / l; return [[A[0] + dx * t0 + nx * k, A[1] + dy * t0 + ny * k], [A[0] + dx * t1 + nx * k, A[1] + dy * t1 + ny * k]]; };
+  const knot = (P, r) => { s += `<circle cx="${r1(P[0])}" cy="${r1(P[1])}" r="${r}" class="bs"/>`; };
+  s += `<ellipse cx="150" cy="30" rx="16.5" ry="13" class="bs"/>`;
+  s += `<path d="M134.5 31 Q133 50 144 57 Q150 61 156 57 Q167 50 165.5 31 Q150 41 134.5 31 Z" class="bs"/>`;
+  if (v === 'f') { s += `<ellipse cx="142.5" cy="31" rx="4" ry="3.2" class="bh"/><ellipse cx="157.5" cy="31" rx="4" ry="3.2" class="bh"/><path d="M146.5 45 L150 41 L153.5 45 Z" class="bh"/><path d="M136 52 Q139 64 150 65 Q161 64 164 52" fill="none" class="br"/>`; }
   for (const side of [0, 1]) {
     const P = (n) => side ? mir(S[n]) : S[n], sg = side ? -1 : 1;
-    line(P('jugulum'), P('acromion'), 2.2);
-    line(...off(P('shoulder'), P('elbow'), 0, 0.04, 0.96), 4.4);
-    line(...off(P('elbow'), P('wrist'), 2.6 * sg, 0.04, 0.97), 2.3); line(...off(P('elbow'), P('wrist'), -2.3 * sg, 0.02, 0.97), 2.1);
-    const W = P('wrist'), T = P('fingertip'), dx = T[0] - W[0], dy = T[1] - W[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l, nx = uy, ny = -ux;
-    for (const k of [-3, -1, 1, 3]) line([W[0] + ux * 5 + nx * k * sg, W[1] + uy * 5 + ny * k * sg], [W[0] + ux * l * 0.62 + nx * k * 1.5 * sg, W[1] + uy * l * 0.62 + ny * k * 1.5 * sg], 1.3);
-    line([W[0] + ux * 4 + nx * 5 * sg, W[1] + uy * 4 + ny * 5 * sg], [W[0] + ux * 16 + nx * 11 * sg, W[1] + uy * 16 + ny * 11 * sg], 1.5);
-    line(...off(P('hip'), P('knee'), 0, 0.02, 0.95), 5.4);
-    line(...off(P('knee'), P('ankle'), -2.2 * sg, 0.05, 0.98), 3.6); line(...off(P('knee'), P('ankle'), 4.4 * sg, 0.08, 0.97), 1.8);
-    const A = P('ankle'), Fo = P('foot'); for (const k of [-4, 0, 4]) line([A[0] + k * 0.6, A[1] + 3], [Fo[0] + k * 1.3 * sg + 3 * sg, Fo[1] + 5], 1.3);
-    if (v === 'f') { const K = P('knee'); s += `<ellipse cx="${K[0]}" cy="${K[1] - 6}" rx="4.6" ry="5.6" class="bs"/>`; }
+    if (v === 'f') { const J = P('jugulum'), A2 = P('acromion'); s += `<path d="M${r1(J[0] + sg * 6)} ${r1(J[1] - 2)} Q${r1(J[0] + sg * 22)} ${r1(J[1] - 5)} ${r1(A2[0])} ${r1(A2[1] - 1)}" fill="none" class="br"/>`; }
     else { const sh = side ? -1 : 1; s += `<path d="M${150 + sh * 8} 102 L${150 + sh * 34} 98 L${150 + sh * 20} 150 Z" class="bs" stroke-linejoin="round"/>`; }
+    line(...off2(P('shoulder'), P('elbow'), 0, 0.04, 0.96), 4.4); knot(P('shoulder'), 3.4);
+    line(...off2(P('elbow'), P('wrist'), 2.6 * sg, 0.04, 0.97), 2.3); line(...off2(P('elbow'), P('wrist'), -2.3 * sg, 0.02, 0.97), 2.1); knot(P('elbow'), 2.6); knot(P('wrist'), 2.8);
+    const W = P('wrist'), T = P('fingertip'), dx = T[0] - W[0], dy = T[1] - W[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l, nx = uy, ny = -ux;
+    for (const k of [-3, -1, 1, 3]) {
+      const mx0 = W[0] + ux * l * 0.62 + nx * k * 1.5 * sg, my0 = W[1] + uy * l * 0.62 + ny * k * 1.5 * sg;
+      line([W[0] + ux * 5 + nx * k * sg, W[1] + uy * 5 + ny * k * sg], [mx0, my0], 1.3);
+      line([mx0 + ux * 2, my0 + uy * 2], [W[0] + ux * l * 0.93 + nx * k * 1.1 * sg, W[1] + uy * l * 0.93 + ny * k * 1.1 * sg], 1.1);
+    }
+    line([W[0] + ux * 4 + nx * 5 * sg, W[1] + uy * 4 + ny * 5 * sg], [W[0] + ux * 16 + nx * 11 * sg, W[1] + uy * 16 + ny * 11 * sg], 1.5);
+    line(...off2(P('hip'), P('knee'), 0, 0.02, 0.94), 5.4);
+    line(...off2(P('knee'), P('ankle'), -2.2 * sg, 0.05, 0.98), 3.6); line(...off2(P('knee'), P('ankle'), 4.4 * sg, 0.08, 0.97), 1.8);
+    knot(P('knee'), 3.1); knot(P('ankle'), 2.4);
+    const A = P('ankle'), Fo = P('foot'); s += `<ellipse cx="${r1(A[0] + sg)}" cy="${r1(A[1] + 4)}" rx="6" ry="4.2" class="bs"/>`;
+    for (const k of [-6, -2, 2, 6]) line([A[0] + k * 0.25, A[1] + 4], [Fo[0] + k * 1.4 * sg + 3 * sg, Fo[1] + 5], 1.2);
+    if (v === 'f') s += `<ellipse cx="${r1(P('knee')[0])}" cy="${P('knee')[1] - 6}" rx="4.6" ry="5.6" class="bs"/>`;
     s += `<circle cx="${P('hip')[0]}" cy="${P('hip')[1] - 2}" r="4.5" class="bs"/>`;
   }
-  for (let i = 0; i < 10; i++) { const y0 = S.jugulum[1] + 9 + i * 7.6, w = 40 - Math.abs(i - 4) * 1.6; for (const sh of [1, -1]) s += `<path d="M${150 + sh * 4} ${y0} Q${150 + sh * (w * 0.6)} ${y0 - 4} ${150 + sh * w} ${y0 + 11}" fill="none" class="br"/>`; }
-  s += `<path d="M118 222 Q110 238 124 252 Q138 258 150 251 Q162 258 176 252 Q190 238 182 222 Q166 233 150 238 Q134 233 118 222 Z" class="bs"/>`;
-  if (v === 'f') {
-    s += `<rect x="146.5" y="${S.jugulum[1]}" width="7" height="${S.xiphoid[1] - S.jugulum[1]}" rx="3" class="bs"/>`;
-    for (let i = 13; i <= 17; i++) { const y = S.c7[1] + i * VERT; s += `<rect x="146" y="${y - 2.8}" width="8" height="5.6" rx="2" class="bs" opacity=".7"/>`; }
-  } else {
-    for (let i = -6; i <= 17; i++) { const y = S.c7[1] + i * VERT, w = i < 1 ? 6 : i < 13 ? 7 : 8.5; s += `<rect x="${150 - w / 2}" y="${y - 2.9}" width="${w}" height="5.8" rx="2" class="bs"/>`; }
-    s += `<path d="M142 236 L158 236 L150 254 Z" class="bs" stroke-linejoin="round"/>`;
+  const RW = [21, 25, 28, 30.5, 32, 32, 31, 29, 26, 22];
+  for (let i = 0; i < 10; i++) {
+    const y0 = S.jugulum[1] + 8 + i * 7.9;
+    if (v === 'f' && y0 > S.xiphoid[1] + 8) continue;
+    for (const sh of [1, -1]) s += `<path d="M${150 + sh * 5.5} ${r1(y0 + 1)} Q${150 + sh * r1(RW[i] * 0.62)} ${r1(y0 + 3.5)} ${150 + sh * RW[i]} ${r1(y0 + 11)}" fill="none" class="br"/>`;
   }
-  s += `<ellipse cx="150" cy="37" rx="17.5" ry="21.5" class="bs"/>`;
-  if (v === 'f') s += `<ellipse cx="143" cy="36" rx="4" ry="3.4" class="bh"/><ellipse cx="157" cy="36" rx="4" ry="3.4" class="bh"/><path d="M148.5 44 L150 40 L151.5 44 Z" class="bh"/><path d="M137 50 Q139 63 150 64 Q161 63 163 50" fill="none" class="br"/>`;
+  if (v === 'f') { const T0 = S.jugulum[1], TX = S.xiphoid[1]; s += `<path d="M146 ${r1(T0 - 1)} L154 ${r1(T0 - 1)} L152.5 ${r1(TX - 3)} Q150 ${r1(TX + 2)} 147.5 ${r1(TX - 3)} Z" class="bs"/>`; s += `<path d="M140 ${r1(S.pubis[1] - 3)} Q145 ${r1(S.pubis[1] + 8)} 150 ${r1(S.pubis[1] + 9)} Q155 ${r1(S.pubis[1] + 8)} 160 ${r1(S.pubis[1] - 3)}" fill="none" class="br"/>`; }
+  const sw = (i) => i < 0 ? 6.5 : i < 13 ? 7.5 : 10;
+  for (let i = v === 'b' ? -6 : 13, mx = v === 'b' ? 16 : 17; i <= mx; i++) { const y = S.c7[1] + i * VERT, w2 = sw(i); s += `<rect x="${150 - w2 / 2}" y="${r1(y - 2.9)}" width="${w2}" height="5.8" rx="2" class="bs"/>`; }
+  if (v === 'b') for (let i = 12; i <= 16; i++) s += `<path d="M141 ${r1(S.c7[1] + i * VERT)} H159" class="br" stroke-width="1.1"/>`;
+  const W0 = S.c7[1] + 14 * VERT, PB = S.pubis[1];
+  s += `<path d="M144.5 ${r1(W0 + 3)} L155.5 ${r1(W0 + 3)} L152.5 ${r1(PB + 5)} Q150 ${r1(PB + 9)} 147.5 ${r1(PB + 5)} Z" class="bs"/>`;
+  s += `<path d="M150 ${r1(W0 - 2)} Q171 ${r1(W0 - 4)} 181 ${r1(W0 + 12)} Q186 ${r1(W0 + 26)} 175 ${r1(W0 + 34)} Q167 ${r1(W0 + 38)} 156 ${r1(W0 + 34)} L152 ${r1(PB - 8)} Z" class="bs"/>`;
+  s += `<path d="M150 ${r1(W0 - 2)} Q129 ${r1(W0 - 4)} 119 ${r1(W0 + 12)} Q114 ${r1(W0 + 26)} 125 ${r1(W0 + 34)} Q133 ${r1(W0 + 38)} 144 ${r1(W0 + 34)} L148 ${r1(PB - 8)} Z" class="bs"/>`;
+  for (const sg of [1, -1]) if (v === 'f') s += `<path d="M${150 + sg * 4} ${r1(PB - 4)} Q${150 + sg * 9} ${r1(PB + 6)} 150 ${r1(PB + 7)}" fill="none" class="br"/>`;
   return o.join('') + f.join('') + s;
 }
 /* mérésrajz: honnan, hány cun, merre */
