@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="900" viewBox="0 0 820 900" font-family="Inter, system-ui, sans-serif">
+  <rect width="820" height="900" fill="#E7EDE9"/>
+  <text x="60" y="52" font-size="24" font-weight="700" fill="#0F1F14">03 · Első indítás — két lépéses bemutatkozás</text>
+  <text x="60" y="78" font-size="14" fill="#4D6153">14 kapcsoló helyett: egy szöveg + 3 választható alapbeállítás, minden más később a Beállításokban</text>
+
+  <g transform="translate(240,100)">
+    <rect x="0" y="0" width="360" height="700" rx="36" fill="#FFFFFF" stroke="#D8E6DB" stroke-width="2"/>
+
+    <!-- háttér: sötét téma Ma-camera -->
+    <g opacity=".35">
+      <rect x="0" y="0" width="360" height="700" rx="36" fill="#0E1612"/>
+      <text x="24" y="64" font-size="22" font-weight="800" fill="#E4EFE7">Szervóra</text>
+      <path d="M 60 190 A 120 120 0 0 1 300 190" fill="none" stroke="#21402F" stroke-width="26" stroke-linecap="round"/>
+      <text x="180" y="150" font-size="24" font-weight="800" text-anchor="middle" fill="#8FD19E">Máj</text>
+    </g>
+
+    <!-- sheet -->
+    <g transform="translate(0,306)">
+      <rect width="360" height="394" rx="28" fill="#F6FBF6"/>
+      <rect x="162" y="10" width="36" height="4" rx="2" fill="#D8E6DB"/>
+
+      <text x="24" y="52" font-size="24" font-weight="800" fill="#0F1F14" letter-spacing="-.5">Üdv!</text>
+      <text x="24" y="78" font-size="14" fill="#4D6153">Ez a szervóra: 12 szerv váltja egymást kétóránként.</text>
+      <text x="24" y="98" font-size="14" fill="#4D6153">Az app mindig megmutatja, melyik van soron —</text>
+      <text x="24" y="118" font-size="14" fill="#4D6153">és mi az, amit most megtehetsz érte.</text>
+
+      <g transform="translate(24,142)" font-size="14" font-weight="600">
+        <text x="0" y="18" fill="#4D6153" font-size="12" font-weight="700" letter-spacing=".6">MI JÖJJEN AZ APPBA?</text>
+        <rect x="0" y="30" width="312" height="46" rx="18" fill="#FFFFFF" stroke="#D8E6DB"/>
+        <text x="14" y="50" fill="#0F1F14">🌬 Légzés</text>
+        <rect x="270" y="41" width="30" height="24" rx="12" fill="#2F6B3E"/><circle cx="289" cy="41" r="10" fill="#FFFFFF"/>
+        <rect x="0" y="84" width="312" height="46" rx="18" fill="#FFFFFF" stroke="#D8E6DB"/>
+        <text x="14" y="104" fill="#0F1F14">✋ Pontmasszázs-rutinok</text>
+        <rect x="270" y="95" width="30" height="24" rx="12" fill="#2F6B3E"/><circle cx="289" cy="95" r="10" fill="#FFFFFF"/>
+        <rect x="0" y="138" width="312" height="46" rx="18" fill="#FFFFFF" stroke="#D8E6DB"/>
+        <text x="14" y="158" fill="#0F1F14">🥣 Ételek és tea</text>
+        <rect x="270" y="149" width="30" height="24" rx="12" fill="#D8E6DB"/><circle cx="277" cy="149" r="10" fill="#FFFFFF"/>
+        <text x="318" y="158" font-size="11" fill="#4D6153"></text>
+      </g>
+
+      <g transform="translate(24,346)">
+        <rect width="200" height="40" rx="20" fill="#2F6B3E"/>
+        <text x="100" y="26" font-size="14" font-weight="700" text-anchor="middle" fill="#FFFFFF">Kezdjük</text>
+        <text x="216" y="26" font-size="13" font-weight="600" fill="#4D6153">→ Minden más a Beállításokban</text>
+      </g>
+      <text x="24" y="380" font-size="11.5" fill="#4D6153">Wellness-tartalom. Nem helyettesíti az orvosi ellátást.</text>
+    </g>
+  </g>
+
+  <g transform="translate(20,140)" font-size="12" fill="#4D6153">
+    <circle cx="8" cy="6" r="4" fill="#2F6B3E"/><text x="20" y="10" font-weight="700" fill="#0F1F14">Első látvány a lényeg</text>
+    <text x="170" y="10">»Melyik van soron?« — nem beállítás-ablak fogad</text>
+    <circle cx="8" cy="30" r="4" fill="#2F6B3E"/><text x="20" y="34" font-weight="700" fill="#0F1F14">3 választható alap</text>
+    <text x="160" y="34">a maradék 11 réteg létezik, de nincs kitéve első indításra</text>
+    <circle cx="8" cy="54" r="4" fill="#2F6B3E"/><text x="20" y="58" font-weight="700" fill="#0F1F14">Felelősségvállalás</text>
+    <text x="172" y="58">»nem diagnosztizál« üzenet már az onboarding elején is</text>
+  </g>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" font-family="Inter, system-ui, sans-serif">
+  <rect width="900" height="640" fill="#FFFFFF"/>
+  <text x="60" y="52" font-size="24" font-weight="700" fill="#0F1F14">04 · Adatszerkezet — célarchitektúra</text>
+  <text x="60" y="78" font-size="14" fill="#4D6153">Tartalom és kód szétválása; canonical ID a WHO-kód; napló IndexedDB-ben</text>
+
+  <!-- források -->
+  <g font-size="13">
+    <rect x="60" y="120" width="220" height="200" rx="16" fill="#EAF3EC" stroke="#2F6B3E" stroke-width="1.5"/>
+    <text x="80" y="150" font-weight="800" fill="#0F1F14" font-size="15">Repository</text>
+    <text x="80" y="178" fill="#0F1F14" font-family="monospace" font-size="12">i18n/hu.json  en.json</text>
+    <text x="80" y="200" fill="#0F1F14" font-family="monospace" font-size="12">data/organs.json</text>
+    <text x="80" y="222" fill="#0F1F14" font-family="monospace" font-size="12">data/channels.json</text>
+    <text x="80" y="244" fill="#0F1F14" font-family="monospace" font-size="12">data/points.json  (schema)</text>
+    <text x="80" y="266" fill="#0F1F14" font-family="monospace" font-size="12">data/rules.json</text>
+    <text x="80" y="296" fill="#4D6153" font-size="12">Új nyelv = 1 fájl, kód-változtatás nélkül</text>
+  </g>
+
+  <!-- build + sw -->
+  <g font-size="13">
+    <rect x="340" y="120" width="220" height="200" rx="16" fill="#FFF2DA" stroke="#7A5200" stroke-width="1.5"/>
+    <text x="360" y="150" font-weight="800" fill="#0F1F14" font-size="15">Build</text>
+    <text x="360" y="178" fill="#0F1F14" font-family="monospace" font-size="12">esbuild → dist/index.html</text>
+    <text x="360" y="200" fill="#0F1F14" font-family="monospace" font-size="12">+ sw.js (v2 precache)</text>
+    <text x="360" y="228" fill="#4D6153" font-size="12">A telepítés továbbra is</text>
+    <text x="360" y="246" fill="#4D6153" font-size="12">egyetlen fájl + néhány asset</text>
+    <text x="360" y="278" fill="#4D6153" font-size="12">Kontrasztaudit a palettákra</text>
+    <text x="360" y="296" fill="#4D6153" font-size="12">+ schema-check a JSON-okra</text>
+  </g>
+
+  <!-- futásidő -->
+  <g font-size="13">
+    <rect x="620" y="120" width="220" height="200" rx="16" fill="#E8F1F9" stroke="#245A85" stroke-width="1.5"/>
+    <text x="640" y="150" font-weight="800" fill="#0F1F14" font-size="15">Futásidő</text>
+    <text x="640" y="178" fill="#0F1F14" font-family="monospace" font-size="12">localStorage: prefs</text>
+    <text x="640" y="200" fill="#0F1F14" font-family="monospace" font-size="12">IndexedDB: log (verziózott)</text>
+    <text x="640" y="228" fill="#4D6153" font-size="12">A napló nem 400 rekordos</text>
+    <text x="640" y="246" fill="#4D6153" font-size="12">localStorage-be jut; verziózott</text>
+    <text x="640" y="278" fill="#4D6153" font-size="12">Kulcs:</text>
+    <text x="640" y="296" fill="#0F1F14" font-family="monospace" font-size="12">id: &quot;HT-7&quot; (canonical WHO)</text>
+  </g>
+
+  <!-- nyilak -->
+  <g stroke="#4D6153" stroke-width="1.5" fill="#4D6153">
+    <line x1="280" y1="220" x2="336" y2="220"/><polygon points="340,220 330,215 330,225"/>
+    <line x1="560" y1="220" x2="616" y2="220"/><polygon points="620,220 610,215 610,225"/>
+  </g>
+
+  <!-- pont séma -->
+  <g font-size="12">
+    <rect x="60" y="360" width="480" height="230" rx="16" fill="#F6FBF6" stroke="#2F6B3E" stroke-width="1.5"/>
+    <text x="80" y="390" font-weight="800" fill="#0F1F14" font-size="14">points.json — pontséma (mintafájl)</text>
+    <text x="80" y="418" fill="#0F1F14" font-family="monospace" font-size="11.5">{</text>
+    <text x="80" y="436" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;id&quot;: &quot;HT-7&quot;,  &quot;display&quot;: {&quot;hu&quot;: &quot;Sz-7&quot;, &quot;who&quot;: &quot;HT7&quot;},</text>
+    <text x="80" y="454" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;names&quot;: {&quot;hu&quot;: &quot;A szellem kapuja&quot;, &quot;pinyin&quot;: &quot;Shenmen&quot;},</text>
+    <text x="80" y="472" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;channel&quot;: &quot;HT&quot;, &quot;element&quot;: &quot;tuz&quot;,</text>
+    <text x="80" y="490" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;location&quot;: {&quot;type&quot;: &quot;segment&quot;, &quot;seg&quot;: &quot;forearm&quot;,</text>
+    <text x="80" y="508" fill="#0F1F14" font-family="monospace" font-size="11.5">               &quot;from&quot;: &quot;ulna&quot;, &quot;d&quot;: 0, &quot;offset&quot;: -1},</text>
+    <text x="80" y="526" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;uses&quot;: [&quot;sleep&quot;, &quot;nerves&quot;, &quot;stage-fright&quot;],</text>
+    <text x="80" y="544" fill="#0F1F14" font-family="monospace" font-size="11.5">  &quot;pregnancy_forbidden&quot;: false, &quot;warnings&quot;: {}</text>
+    <text x="80" y="562" fill="#0F1F14" font-family="monospace" font-size="11.5">}</text>
+    <text x="80" y="582" fill="#4D6153" font-size="11.5">35 → 361 pont: csak új sor. A magyar kód display-mező, nem kulcs.</text>
+  </g>
+
+  <!-- régi/új -->
+  <g font-size="13">
+    <rect x="580" y="360" width="260" height="230" rx="16" fill="#FFF8F6" stroke="#A3331F" stroke-width="1.5"/>
+    <text x="600" y="390" font-weight="800" fill="#0F1F14" font-size="14">Miért ez jobb, mint most?</text>
+    <text x="600" y="418" fill="#0F1F14">· Új nyelv: 1 JSON, nem a 243 KB-os</text>
+    <text x="612" y="436" fill="#0F1F14">HTML piszkálása</text>
+    <text x="600" y="464" fill="#0F1F14">· Pont-atlasz bővíthető adatsorral,</text>
+    <text x="612" y="482" fill="#0F1F14">kód nélkül (csont-vázmarad)</text>
+    <text x="600" y="510" fill="#0F1F14">· A napló nincs kitéve localStorage-</text>
+    <text x="612" y="528" fill="#0F1F14">limit- és adatvesztés-veszélyben</text>
+    <text x="600" y="556" fill="#0F1F14">· Küszöbök (mintafelismerés) tartalmi</text>
+    <text x="612" y="574" fill="#0F1F14">szabályok járnak, nem kód</text>
+  </g>
+</svg>
