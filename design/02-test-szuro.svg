@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="900" viewBox="0 0 820 900" font-family="Inter, system-ui, sans-serif">
+  <rect width="820" height="900" fill="#E7EDE9"/>
+  <text x="60" y="52" font-size="24" font-weight="700" fill="#0F1F14">02 · „Test” képernyő — szűrő alsó lappal</text>
+  <text x="60" y="78" font-size="14" fill="#4D6153">A képernyő tiszta térkép: kereső + 15 csatorna + rétegek egyetlen lapba zárva</text>
+
+  <g transform="translate(240,100)">
+    <rect x="0" y="0" width="360" height="700" rx="36" fill="#FFFFFF" stroke="#D8E6DB" stroke-width="2"/>
+
+    <!-- fejléc -->
+    <text x="24" y="64" font-size="22" font-weight="800" fill="#0F1F14" letter-spacing="-.4">Test</text>
+    <text x="24" y="82" font-size="12" fill="#4D6153">Máj · 01:38</text>
+    <rect x="302" y="38" width="34" height="34" rx="17" fill="#EAF3EC"/>
+    <text x="319" y="60" font-size="14" text-anchor="middle" fill="#2F6B3E">⚙</text>
+
+    <!-- szűrő gomb (nyitott lap) -->
+    <g transform="translate(24,96)">
+      <rect width="312" height="46" rx="23" fill="#2F6B3E"/>
+      <text x="18" y="29" font-size="14" font-weight="700" fill="#FFFFFF">⌕ Szűrés</text>
+      <text x="86" y="30" font-size="12" fill="#CDEBD3">Máj csatorna · 4 pont</text>
+      <text x="290" y="29" font-size="14" fill="#FFFFFF">▲</text>
+    </g>
+
+    <!-- térkép -->
+    <g transform="translate(24,156)">
+      <rect width="312" height="330" rx="24" fill="#EAF3EC"/>
+      <circle cx="156" cy="52" r="20" fill="#E8DECA" stroke="#CDBF9F"/>
+      <rect x="132" y="76" width="48" height="86" rx="22" fill="#E8DECA" stroke="#CDBF9F"/>
+      <line x1="140" y1="90" x2="112" y2="150" stroke="#E8DECA" stroke-width="14" stroke-linecap="round"/>
+      <line x1="172" y1="90" x2="200" y2="150" stroke="#E8DECA" stroke-width="14" stroke-linecap="round"/>
+      <line x1="104" y1="150" x2="98" y2="212" stroke="#E8DECA" stroke-width="11" stroke-linecap="round"/>
+      <line x1="208" y1="150" x2="214" y2="212" stroke="#E8DECA" stroke-width="11" stroke-linecap="round"/>
+      <line x1="144" y1="166" x2="142" y2="262" stroke="#E8DECA" stroke-width="17" stroke-linecap="round"/>
+      <line x1="168" y1="166" x2="170" y2="262" stroke="#E8DECA" stroke-width="17" stroke-linecap="round"/>
+      <path d="M142 262 L150 246 L158 232 L156 212 L168 196 L184 186" fill="none" stroke="#2F6B3E" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 10"/>
+      <circle cx="150" cy="308" r="12" fill="#2F6B3E" opacity=".28"/>
+      <circle cx="150" cy="308" r="6" fill="#2F6B3E" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="164" y="304" font-size="11" font-weight="600" fill="#0F1F14">M-3 · Nagy rohanás</text>
+      <text x="164" y="318" font-size="10.5" fill="#4D6153">Feszültség · ingerlékenység</text>
+      <rect x="270" y="260" width="30" height="60" rx="15" fill="#FFFFFF" stroke="#D8E6DB"/>
+      <text x="285" y="284" font-size="14" text-anchor="middle" fill="#0F1F14">+</text>
+      <line x1="276" y1="294" x2="294" y2="294" stroke="#D8E6DB"/>
+      <text x="285" y="312" font-size="14" text-anchor="middle" fill="#0F1F14">−</text>
+    </g>
+
+    <!-- pont kártya -->
+    <g transform="translate(24,498)">
+      <rect width="312" height="64" rx="18" fill="#FFFFFF" stroke="#D8E6DB"/>
+      <circle cx="26" cy="32" r="6" fill="#2F6B3E"/>
+      <text x="42" y="26" font-size="14" font-weight="700" fill="#0F1F14">Nagy rohanás</text>
+      <text x="42" y="44" font-size="12" fill="#4D6153">M-3 · Yuan és Föld-pont · lábhát</text>
+      <rect x="238" y="16" width="64" height="32" rx="16" fill="#2F6B3E"/>
+      <text x="270" y="36" font-size="11.5" font-weight="700" text-anchor="middle" fill="#FFFFFF">Vezess oda</text>
+    </g>
+
+    <!-- ALSÓ LAP (bottom sheet) -->
+    <g transform="translate(0,572)">
+      <rect width="360" height="178" rx="28" fill="#F6FBF6"/>
+      <rect x="162" y="10" width="36" height="4" rx="2" fill="#D8E6DB"/>
+      <g transform="translate(24,26)">
+        <rect width="312" height="42" rx="21" fill="#EAF3EC"/>
+        <text x="16" y="27" font-size="13" fill="#4D6153">⌕ Terület vagy cél: csukló, alvás, fej…</text>
+      </g>
+      <g transform="translate(24,80)" font-size="12" font-weight="600">
+        <rect width="54" height="26" rx="13" fill="#2F6B3E"/><text x="27" y="17" text-anchor="middle" fill="#FFFFFF">Mind</text>
+        <rect x="60" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="72" cy="13" r="4" fill="#E8DECA"/><text x="82" y="17" fill="#0F1F14">T · 11</text>
+        <rect x="128" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="140" cy="13" r="4" fill="#E8DECA"/><text x="150" y="17" fill="#0F1F14">Vab · 20</text>
+        <rect x="196" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="208" cy="13" r="4" fill="#E8DECA"/><text x="218" y="17" fill="#0F1F14">Gy · 45</text>
+        <rect x="264" width="48" height="26" rx="13" fill="#FFFFFF"/><circle cx="276" cy="13" r="4" fill="#E8DECA"/><text x="286" y="17" fill="#0F1F14">Lh · 21</text>
+        <rect x="0" y="32" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="12" cy="45" r="4" fill="#E8DECA"/><text x="22" y="49" fill="#0F1F14">Sz · 9</text>
+        <rect x="68" y="32" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="80" cy="45" r="4" fill="#E8DECA"/><text x="90" y="49" fill="#0F1F14">H · 67</text>
+        <rect x="136" y="32" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="148" cy="45" r="4" fill="#E8DECA"/><text x="158" y="49" fill="#0F1F14">V · 27</text>
+        <rect x="204" y="32" width="62" height="26" rx="13" fill="#FFFFFF"/><circle cx="216" cy="45" r="4" fill="#E8DECA"/><text x="226" y="49" fill="#0F1F14">Eh · 44</text>
+        <rect x="272" y="32" width="40" height="26" rx="13" fill="#FFFFFF"/><circle cx="284" cy="45" r="4" fill="#E8DECA"/><text x="292" y="49" fill="#0F1F14">M · 14</text>
+      </g>
+      <g transform="translate(24,150)" font-size="12" font-weight="600">
+        <text x="0" y="18" fill="#4D6153">Rétegek:</text>
+        <rect x="58" y="4" width="58" height="26" rx="13" fill="#FFFFFF"/><text x="87" y="21" text-anchor="middle" fill="#0F1F14">Bőr ✓</text>
+        <rect x="122" y="4" width="74" height="26" rx="13" fill="#FFFFFF"/><text x="159" y="21" text-anchor="middle" fill="#0F1F14">Csatorna ✓</text>
+        <rect x="202" y="4" width="62" height="26" rx="13" fill="#FFFFFF"/><text x="233" y="21" text-anchor="middle" fill="#0F1F14">Pontok ✓</text>
+        <rect x="270" y="4" width="62" height="26" rx="13" fill="#FFFFFF"/><text x="301" y="21" text-anchor="middle" fill="#4D6153">Csontok</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(20,120)" font-size="12" fill="#4D6153">
+    <circle cx="8" cy="6" r="4" fill="#2F6B3E"/><text x="20" y="10" font-weight="700" fill="#0F1F14">Egy szűrő-gomb</text>
+    <text x="128" y="10">a 15 pill + kereső + 4 réteg-kapcsoló felugró lapba költözik</text>
+    <circle cx="8" cy="30" r="4" fill="#2F6B3E"/><text x="20" y="34" font-weight="700" fill="#0F1F14">Térkép első</text>
+    <text x="104" y="34">a testrajz a fő tartalom, a vezérlők felugranak, nem oszlopba töltve</text>
+    <circle cx="8" cy="54" r="4" fill="#2F6B3E"/><text x="20" y="58" font-weight="700" fill="#0F1F14">Kontextus-sáv</text>
+    <text x="128" y="58">»Máj csatorna · 4 pont« — mindig látszik, mit szűr és mennyit</text>
+  </g>
+</svg>
