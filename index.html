@@ -478,6 +478,8 @@ nav.tabs a[aria-current=page] .ind{background:var(--cont);color:var(--acc)}
 Object.assign(window.SZ_LANG.hu.ui, {
   app: 'Szervóra', back_l: 'Vissza', close_l: 'Bezárás', settings_t: 'Beállítások', nav_l: 'Fő navigáció',
   tab_ma: 'Ma', tab_test: 'Test', tab_prac: 'Gyakorlat', tab_know: 'Tudás', tab_log: 'Napló',
+  tab_explore: 'Test · Tudás', filter_btn: 'Szűrés',
+  onb_h: 'Üdvözlünk! Ez a Szervóra', onb_1: 'A szervóra a napot 12 szerv kétórás ablakaira osztja: a „Ma” lap mindig egy fő teendőt javasol, este pedig lecsendesedést.', onb_2: 'Nincs bejelentkezés, nincs szerver: minden adat ebben a böngészőben marad. A rétegeket bármikor változtathatod a Beállításoknál.', onb_layers_t: 'Rétegek az elejére', onb_cta: 'Kezdjük',
   arc_label: 'A nap szervszalagja: középen a mostani szerv, balra az elmúlt, jobbra a következő órák', now_el: 'MOST · {e}',
   enough: 'Most ennyi elég', start_min: 'Indítás · {m} perc', only_breath: 'Csak légzés',
   rec_night_t: 'Lecsendesedés alvás előtt', rec_night_s: 'Lassú nyomás fentről lefelé, hosszabb kilégzéssel. Utána már ne nézz képernyőt.',
@@ -765,6 +767,8 @@ window.SZ_LANG.hu.c.astro = {
 Object.assign(window.SZ_LANG.en.ui, {
   app: 'Organ Clock', back_l: 'Back', close_l: 'Close', settings_t: 'Settings', nav_l: 'Main navigation',
   tab_ma: 'Today', tab_test: 'Body', tab_prac: 'Practice', tab_know: 'Learn', tab_log: 'Journal',
+  tab_explore: 'Body · Knowledge', filter_btn: 'Filter',
+  onb_h: 'Welcome to Szervóra', onb_1: 'The organ clock maps 12 organs onto 12 two-hour windows of your day: the Today screen always suggests one main activity, winding down in the evening.', onb_2: 'No sign-in, no server: all data stays in this browser. You can switch content layers anytime in Settings.', onb_layers_t: 'Layers to start with', onb_cta: "Let's go",
   arc_label: 'Organ ribbon of the day: the current organ in the centre, past hours to the left, coming hours to the right', now_el: 'NOW · {e}',
   enough: 'This is enough for now', start_min: 'Start · {m} min', only_breath: 'Just breathe',
   rec_night_t: 'Wind down before sleep', rec_night_s: 'Slow pressure from top to bottom, with a longer out-breath. No screens afterwards.',
@@ -1399,6 +1403,7 @@ V.ma = () => {
     <div class="sec"><h2>${t('later')}</h2></div>
     <div class="grid2">${later.map((x) => `<a class="tile big" href="#szerv-${slug(x.c)}"><div class="k">${String(x.s).padStart(2, '0')}:00 · ${elT(x.el).n}</div><div class="v">${orgN(x.c)}</div></a>`).join('')}</div>
     <div class="card quiet"><div class="s">${C('org', o.c)[2]}</div></div>
+    <div class="grid2"><a class="tile big" href="#gyakorlat"><div class="k">${t('tab_prac')}</div><div class="v">${t('routines_h')}</div></a><a class="tile big" href="#tudas"><div class="k">${t('tab_know')}</div><div class="v">${t('relations')}</div></a></div>
     ${disclaimer()}
   </section>`;
 };
@@ -1418,6 +1423,31 @@ function sheetHtml() {
 }
 function openSheet() { const l = lastCheckin(); CI = l ? { e: l.e, m: l.m, s: l.s } : { e: 1, m: 1, s: 1 }; let el = $('#sheetbox'); if (!el) { el = document.createElement('div'); el.id = 'sheetbox'; document.body.appendChild(el); } el.innerHTML = sheetHtml(); const f = $('.sheet [aria-checked=true]'); if (f) f.focus(); }
 function closeSheet() { const el = $('#sheetbox'); if (el) el.innerHTML = ''; }
+function filterSheet() {
+  return `<div class="scrim" data-act="tfclose"></div><section class="sheet" role="dialog" aria-modal="true" aria-label="${t('filter_btn')}">
+    <div class="grip"></div>
+    <div style="display:flex;gap:8px;align-items:center"><h2 class="display grow" style="font-size:22px">${t('filter_btn')}</h2><button type="button" class="iconbtn tonal" data-act="tfclose" aria-label="${t('close_l')}">${ic('close')}</button></div>
+    <label for="tq" class="sr">${t('search_body')}</label><div class="search">${ic('search', 20)}<input id="tq" type="search" placeholder="${esc(t('search_body'))}" value="${esc(TS.q)}" autocomplete="off"></div>
+    <div class="pills" role="group" aria-label="${t('channel')}" style="padding:10px 0">${tlPills()}</div>
+    <div class="list" role="group" aria-label="${t('layers_l')}">${TLAYERS.map(([k, i, l]) => `<div class="li"><span class="ic">${ic(i)}</span><label class="grow" for="mt-${k}">${t(l)}</label><input class="switch" type="checkbox" role="switch" id="mt-${k}" data-mt="${k}"${TS[k] ? ' checked' : ''}></div>`).join('')}</div>
+    <div class="btnrow" style="justify-content:center"><button type="button" class="btn" data-act="tfclose">${t('ok')}</button></div>
+  </section>`;
+}
+function openFilterSheet() { let el = $('#sheetbox'); if (!el) { el = document.createElement('div'); el.id = 'sheetbox'; document.body.appendChild(el); } el.innerHTML = filterSheet(); const q = $('#tq'); if (q) q.focus(); }
+function onbSheet() {
+  const items = [['legzes', 'breath'], ['rutinok', 'hand'], ['taplalkozas', 'food']];
+  return `<div class="scrim" data-act="onbgo"></div><section class="sheet" role="dialog" aria-modal="true" aria-label="${t('onb_h')}">
+    <div class="grip"></div>
+    <h2 class="display" style="font-size:26px">${t('onb_h')}</h2>
+    <p class="s" style="font-size:15px;line-height:22px">${t('onb_1')}</p>
+    <p class="s" style="font-size:15px;line-height:22px">${t('onb_2')}</p>
+    <div class="flabel" style="margin-top:12px">${t('onb_layers_t')}</div>
+    <div class="list">${items.map(([k, i]) => `<div class="li"><span class="ic">${ic(i)}</span><label class="grow" for="ly-${k}">${t('ly_' + k)}</label><input class="switch" type="checkbox" role="switch" id="ly-${k}" data-layer="${k}"${L[k] ? ' checked' : ''}></div>`).join('')}</div>
+    <div class="btnrow" style="justify-content:center"><button type="button" class="btn" data-act="onbgo">${t('onb_cta')}</button></div>
+    <p class="note">${ic('shield', 14)} ${t('info_banner')}</p>
+  </section>`;
+}
+function openOnb() { let el = $('#sheetbox'); if (!el) { el = document.createElement('div'); el.id = 'sheetbox'; document.body.appendChild(el); } el.innerHTML = onbSheet(); }
 function saveCheckin() { const l = getLog(); l.push({ type: 'ci', t: Date.now(), e: CI.e, m: CI.m, s: CI.s }); setLog(l); }
 
 /* ================= SZERV ================= */
@@ -1443,17 +1473,17 @@ V.szerv = (code) => {
 
 /* ================= TEST ================= */
 const TS = { v: 'f', sel: 'Sz-7', ch: 'all', q: '', skin: true, chOn: true, pts: true, bones: false };
+let TEST = null;
 const hay = (p) => [C('area', p.id), ptT(p.id)[0], p.py, p.id, p.who, chT(p.ch)[0], ...p.goals.map((g) => C('goals', g)[0])].join(' ').toLowerCase();
 const tMatch = (p) => (TS.ch === 'all' || p.ch === TS.ch) && (!TS.q || hay(p).includes(TS.q));
+const TLAYERS = [['skin', 'body', 'layer_skin'], ['chOn', 'wave', 'layer_ch'], ['pts', 'hand', 'layer_pts'], ['bones', 'bone', 'layer_bones']];
+function tlPills() { return [['all', t('all_ch')], ...CHORDER.map((c) => [c, chA(c)])].map(([k, n]) => `<button type="button" class="pill" data-act="tch" data-k="${k}" aria-pressed="${k === TS.ch}" ${k !== 'all' ? `aria-label="${esc(chT(k)[0])}" style="--dotc:var(--${CHEL[k]})"` : ''}>${k !== 'all' ? '<span class="dot" style="background:var(--dotc)"></span>' : ''}${n}</button>`).join(''); }
 V.test = (arg) => {
   if (arg.startsWith('ch-')) { const c = CHORDER.find((x) => slug(x) === arg.slice(3)); if (c) { TS.ch = c; TS.q = ''; const f = PTS.find((p) => p.ch === c); if (f) { TS.sel = f.id; TS.v = CHP[c] ? CHP[c][0] : f.v[0]; } } }
   if (arg.startsWith('p-') && PBS[arg.slice(2)]) { const p = PBS[arg.slice(2)]; TS.sel = p.id; TS.v = p.v.includes(TS.v) ? TS.v : p.v[0]; }
-  const layers = [['skin', 'body', 'layer_skin'], ['chOn', 'wave', 'layer_ch'], ['pts', 'hand', 'layer_pts'], ['bones', 'bone', 'layer_bones']];
   return `${top(t('tab_test'), `${orgN(orgAt(now()).c)} · ${clockStr(now())}`, '', settingsBtn())}
-  <div class="pad"><label for="tq" class="sr">${t('search_body')}</label><div class="search">${ic('search', 20)}<input id="tq" type="search" placeholder="${esc(t('search_body'))}" value="${esc(TS.q)}" autocomplete="off"><span id="tcount" class="sub" style="white-space:nowrap"></span></div></div>
-  <div class="pills" role="group" aria-label="${t('channel')}">${[['all', t('all_ch')], ...CHORDER.map((c) => [c, chA(c)])].map(([k, n]) => `<button type="button" class="pill" data-act="tch" data-k="${k}" aria-pressed="${k === TS.ch}" ${k !== 'all' ? `aria-label="${esc(chT(k)[0])}" style="--dotc:var(--${CHEL[k]})"` : ''}>${k !== 'all' ? '<span class="dot" style="background:var(--dotc)"></span>' : ''}${n}</button>`).join('')}</div>
+  <div class="pad"><button type="button" class="row flat" data-act="tfilt" style="width:100%;text-align:left;border:0;cursor:pointer"><span class="ic">${ic('search')}</span><span class="grow"><span class="t">${t('filter_btn')}</span><span class="s" id="tcount"></span></span>${ic('chev', 18)}</button></div>
   <div class="map" id="tmap" tabindex="0" aria-label="${t('map_label')}">
-    <div class="layerbox" role="group" aria-label="${t('layers_l')}">${layers.map(([k, i, l]) => `<button type="button" data-act="tlayer" data-k="${k}" aria-pressed="${TS[k]}">${ic(i, 20)}<span>${t(l)}</span></button>`).join('')}</div>
     <div class="mapview" role="group" aria-label="${t('view')}">${['f', 'b'].map((k) => `<button type="button" class="pill" data-mz="view-${k}" aria-pressed="${k === TS.v}">${t(k === 'f' ? 'front' : 'back')}</button>`).join('')}</div>
     <div class="mapctl"><button type="button" data-mz="zin" aria-label="${t('zoom_in')}">+</button><span data-zl>1×</span><button type="button" data-mz="zout" aria-label="${t('zoom_out')}">−</button><button type="button" data-mz="zreset" aria-label="${t('zoom_reset')}">${ic('reset', 18)}</button></div>
   </div>
@@ -1471,17 +1501,12 @@ function tCard(p) {
 function initTest(signal) {
   const opts = { v: TS.v, signal, channelOfSel: TS.ch === 'all', dim: (p) => !tMatch(p), onPick: (id) => { TS.sel = id; map.select(id); card(); }, onView: (v) => { TS.v = v; } };
   let map = null;
-  const card = () => { $('#tcard').innerHTML = tCard(PBY[TS.sel]); $('#tcount').textContent = TS.q || TS.ch !== 'all' ? t('n_pts', { n: PTS.filter(tMatch).length }) : ''; };
+  const card = () => { $('#tcard').innerHTML = tCard(PBY[TS.sel]); $('#tcount').textContent = TS.q || TS.ch !== 'all' ? t('n_pts', { n: PTS.filter(tMatch).length }) : t('all_ch'); };
   map = BodyMap($('#tmap'), opts);
   const flags = () => { map.skin = TS.skin; map.pts = TS.pts; map.chOn = TS.chOn; map.bones = TS.bones; if (TS.ch !== 'all') map.ch = TS.ch; };
   const ensure = () => { let p = PBY[TS.sel]; if (!tMatch(p)) { const f = PTS.find((q) => q.v.includes(TS.v) && tMatch(q)) || PTS.find(tMatch); if (f) TS.sel = f.id; } };
   flags(); ensure(); map.select(TS.sel, TS.ch !== 'all' ? false : false); flags(); map.drawSk(); map.drawCh(); map.renderPts(); card();
-  $('#view').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
-    if (a === 'tlayer') { const k = b.dataset.k; TS[k] = !TS[k]; b.setAttribute('aria-pressed', TS[k]); flags(); if (k === 'bones' && TS.bones && map.z < 2.2) { map.z = 2.6; map.centerOn(PBY[TS.sel], true); } map.drawSk(); map.drawCh(); map.renderPts(); }
-    if (a === 'tch') { TS.ch = b.dataset.k; $$('[data-act=tch]').forEach((x) => x.setAttribute('aria-pressed', x === b)); opts.channelOfSel = TS.ch === 'all'; ensure(); if (TS.ch !== 'all') { map.ch = TS.ch; const pv = CHP[TS.ch] ? CHP[TS.ch][0] : PBY[TS.sel].v[0]; if (pv !== map.v) map.setView(pv); } map.select(TS.sel); flags(); map.drawCh(); map.renderPts(); card(); }
-  }, { signal });
-  $('#view').addEventListener('input', (e) => { if (e.target.id !== 'tq') return; TS.q = e.target.value.trim().toLowerCase(); const before = TS.sel; ensure(); if (before !== TS.sel) map.select(TS.sel); else map.renderPts(); card(); }, { signal });
+  TEST = { map, opts, flags, ensure, card, apply: (k) => { flags(); if (k === 'bones' && TS.bones && map.z < 2.2) { map.z = 2.6; map.centerOn(PBY[TS.sel], true); } map.drawSk(); map.drawCh(); map.renderPts(); } };
 }
 
 /* ================= PONT ================= */
@@ -1906,8 +1931,8 @@ V.technikak = () => {
 };
 
 /* ================= útválasztó ================= */
-const TABS = [['ma', 'tab_ma', 'today'], ['test', 'tab_test', 'body'], ['gyakorlat', 'tab_prac', 'practice'], ['tudas', 'tab_know', 'graph'], ['naplo', 'tab_log', 'journal']];
-const GROUP = { ma: 'ma', kijelzo: 'ma', szerv: 'ma', beallitasok: 'ma', test: 'test', pont: 'test', gyakorlat: 'gyakorlat', rutin: 'gyakorlat', technikak: 'gyakorlat', tudas: 'tudas', elem: 'tudas', naplo: 'naplo' };
+const TABS = [['ma', 'tab_ma', 'today'], ['test', 'tab_explore', 'body'], ['naplo', 'tab_log', 'journal']];
+const GROUP = { ma: 'ma', kijelzo: 'ma', szerv: 'ma', beallitasok: 'ma', test: 'test', pont: 'test', gyakorlat: 'test', rutin: 'test', technikak: 'test', tudas: 'test', elem: 'test', naplo: 'naplo' };
 let ac = null, tickIv = null, lastHash = '';
 function route() {
   const h = (location.hash.slice(1) || 'ma').toLowerCase();
@@ -1921,6 +1946,7 @@ function route() {
   nav.innerHTML = TABS.map(([href, n, icn]) => { const on = GROUP[name] === href; return `<a href="#${href}"${on ? ' aria-current="page"' : ''}><span class="ind">${ic(icn, 22, on ? 2.1 : 1.8)}</span><span>${t(n)}</span></a>`; }).join('');
   if (h !== lastHash) window.scrollTo(0, 0); lastHash = h;
   const sig = ac.signal;
+  if (name === 'ma' && !location.hash && !store.get('onboarded', false)) { store.set('onboarded', true); setTimeout(openOnb, 450); }
   if (name === 'test') initTest(sig);
   if (name === 'pont') initTimer(sig);
   if (name === 'gyakorlat') { initBreath(sig); if (arg === 'legzes') { const el = $('#legzes'); if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 0); } }
@@ -1933,6 +1959,10 @@ document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
   if (a === 'checkin') openSheet();
   if (a === 'ciclose') closeSheet();
+  if (a === 'onbgo') closeSheet();
+  if (a === 'tfilt') openFilterSheet();
+  if (a === 'tfclose') closeSheet();
+  if (a === 'tch' && TEST) { TS.ch = b.dataset.k; $$('[data-act=tch]').forEach((x) => x.setAttribute('aria-pressed', x === b)); TEST.opts.channelOfSel = TS.ch === 'all'; TEST.ensure(); if (TS.ch !== 'all') { TEST.map.ch = TS.ch; const pv = CHP[TS.ch] ? CHP[TS.ch][0] : PBY[TS.sel].v[0]; if (pv !== TEST.map.v) TEST.map.setView(pv); } TEST.map.select(TS.sel); TEST.flags(); TEST.map.drawCh(); TEST.map.renderPts(); TEST.card(); }
   if (a === 'ci') { CI[b.dataset.k] = +b.dataset.v; $$(`#sheetbox [data-act=ci][data-k="${b.dataset.k}"]`).forEach((x) => x.setAttribute('aria-checked', x === b)); const rec = recommend(now(), CI); $('#cirec').textContent = `${rec.ti} · ${t('min_n', { n: Math.max(1, Math.round(rec.r.sec / 60)) })}`; $('#cigo').dataset.r = rec.id; }
   if (a === 'cisave') { saveCheckin(); closeSheet(); route(); }
   if (a === 'cigo') { saveCheckin(); closeSheet(); location.hash = 'rutin-' + b.dataset.r; }
@@ -1952,11 +1982,12 @@ document.addEventListener('click', (e) => {
   if (a === 'bclear') { store.set('birth', null); astroEdit = false; route(); }
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#sheetbox .sheet')) closeSheet(); });
-document.addEventListener('input', (e) => { if (e.target.id === 'lexq') { lexQ = e.target.value; $('#lexlist').innerHTML = lexList(); } });
+document.addEventListener('input', (e) => { if (e.target.id === 'lexq') { lexQ = e.target.value; $('#lexlist').innerHTML = lexList(); } if (e.target.id === 'tq' && TEST) { TS.q = e.target.value.trim().toLowerCase(); const before = TS.sel; TEST.ensure(); if (before !== TS.sel) TEST.map.select(TS.sel); else TEST.map.renderPts(); TEST.card(); } });
 document.addEventListener('change', (e) => {
   const ds = e.target.dataset || {};
   if (ds.layer) { L[ds.layer] = e.target.checked; store.set('layers', L); }
   if (ds.pref) store.set(ds.pref, e.target.checked);
+  if (ds.mt && TEST) { TS[ds.mt] = e.target.checked; TEST.apply(ds.mt); }
 });
 window.addEventListener('hashchange', route);
 route();
